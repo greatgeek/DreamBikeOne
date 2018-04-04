@@ -4,13 +4,16 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -31,6 +34,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private Button Login_bt;
     private Button Register_bt;
     private User user;
+    /**记住密码*/
+    private CheckBox rememberPass;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
     /**广播部分*/
     private LocalBroadcastManager localBroadcastManager;
     /**广播接收部分*/
@@ -43,9 +50,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        /**获取实例*/
+        /**登录部分获取实例*/
         username=(EditText)findViewById(R.id.username);
         password=(EditText)findViewById(R.id.password);
+        /**记住密码*/
+        rememberPass=(CheckBox)findViewById(R.id.remember_pass);
+        pref= PreferenceManager.getDefaultSharedPreferences(this);
 
         Login_bt=(Button)findViewById(R.id.login);
         Register_bt=(Button)findViewById(R.id.regist);
@@ -59,6 +69,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         /**为按钮注册*/
         Login_bt.setOnClickListener(this);
         Register_bt.setOnClickListener(this);
+
+        boolean isRemember=pref.getBoolean("remember_password",false);
+        if (isRemember){
+            String usernameS=pref.getString("username","");
+            String passwordS=pref.getString("password","");
+            username.setText(usernameS);
+            password.setText(passwordS);
+            rememberPass.setChecked(true);
+        }
     }
 
     @Override
@@ -122,6 +141,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             }
                         }
                     }).start();
+                    editor=pref.edit();
+                    if (rememberPass.isChecked()){
+                        editor.putBoolean("remember_password",true);
+                        editor.putString("username",username.getText().toString().trim());
+                        editor.putString("password",password.getText().toString().trim());
+                    }else {
+                        editor.clear();
+                    }
+                    editor.apply();
                 }
 
                 break;
