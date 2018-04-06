@@ -102,6 +102,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
 
     boolean isFirstLocat=true;
     private int rideOverlayCount=0;
+    private int walkOverlayCount=0;
     private RouteSearch mRouteSearch;
     private final int ROUTE_TYPE_WALK=3;
     private final int ROUTE_TYPE_RIDE=4;
@@ -421,7 +422,11 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         if (tempMarker!=null){/**说明傀儡Marker已经指向一个Marker，有一个步行图层*/
             tempMarker=null;/**将傀儡Marker指向null*/
             mWalkRouteOverlay.removeFromMap();/**去除上一点的图层*/
+            //mRideRouteOverlay.removeFromMap();
+        }
+        if (rideOverlayCount>0){
             mRideRouteOverlay.removeFromMap();
+            rideOverlayCount=0;
         }
         searchRideRouteResult(ROUTE_TYPE_RIDE,RouteSearch.RIDING_DEFAULT);/**发起请求*/
         tempMarker=marker;
@@ -463,7 +468,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         if (tempMarker!=null){/**说明傀儡Marker已经指向一个Marker*/
             tempMarker=null;/**将傀儡Marker指向一个null*/
             mWalkRouteOverlay.removeFromMap();/**去除上一点的涂层*/
-            mRideRouteOverlay.removeFromMap();
+            //mRideRouteOverlay.removeFromMap();
         }
         if (rideOverlayCount>0){/**如果骑行图层存在，则清除它*/
             mRideRouteOverlay.removeFromMap();
@@ -524,6 +529,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                     goOutChoice=ROUTE_TYPE_WALK;
                     tempMarker.showInfoWindow();/**发起请求后，等待onWalkRouteSearched()这个回调接口
                                                     的调用，此次调用成功即说明数据接收和解析成功，再显示InfoWindow信息窗口*/
+                    walkOverlayCount++;
                 }else if (result!=null&&result.getPaths()==null){
                     Toast.makeText(this,"对不起，没有搜索到相关数据！",Toast.LENGTH_LONG).show();
                 }
