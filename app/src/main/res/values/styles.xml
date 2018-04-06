@@ -17,5 +17,9 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
     </style>
+    <!--用户自定义启动页的theme-->
+    <style name="AppTheme.customTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splash</item>
+    </style>
 
 </resources>

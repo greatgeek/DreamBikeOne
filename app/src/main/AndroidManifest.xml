@@ -33,21 +33,19 @@
             android:name="com.amap.api.v2.apikey"
             android:value="dbafd5235dbe0cd065f0cbb7fddd3d8f" />
 
-        <activity android:name=".MainActivity">
-
-        </activity>
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".RegisterActivity" />
-        <activity android:name=".InputtipsActivity" />
-        <activity android:name=".route.RideRouteDetailActivity" />
-        <activity android:name=".route.WalkRouteDetailActivity" />
-        <activity android:name=".SplashActivity">
+        <activity android:name=".MainActivity"
+            android:theme="@style/AppTheme.customTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".RegisterActivity" />
+        <activity android:name=".InputtipsActivity" />
+        <activity android:name=".route.RideRouteDetailActivity" />
+        <activity android:name=".route.WalkRouteDetailActivity" />
     </application>
 
 </manifest>
