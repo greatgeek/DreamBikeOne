@@ -40,6 +40,10 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.services.core.AMapException;
 import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.geocoder.GeocodeResult;
+import com.amap.api.services.geocoder.GeocodeSearch;
+import com.amap.api.services.geocoder.RegeocodeQuery;
+import com.amap.api.services.geocoder.RegeocodeResult;
 import com.amap.api.services.route.BusRouteResult;
 import com.amap.api.services.route.DriveRouteResult;
 import com.amap.api.services.route.RidePath;
@@ -71,7 +75,7 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity implements AMap.OnMyLocationChangeListener
         ,AMap.OnMapTouchListener,AMap.OnMarkerClickListener,AMap.InfoWindowAdapter
-        ,RouteSearch.OnRouteSearchListener,AMap.OnInfoWindowClickListener{
+        ,RouteSearch.OnRouteSearchListener,AMap.OnInfoWindowClickListener,GeocodeSearch.OnGeocodeSearchListener{
     private static final String TAG = "MainActivity";
     /**Login部分变量*/
     private DrawerLayout mDrawerLayout;
@@ -119,7 +123,13 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     String markerUrl="http://120.79.91.50/locationTojson.php";
     /**二维码扫描部分*/
     private String QRresult=null;
-    final String url="http://120.79.91.50/DreamBike/DreamBike_bluetoothlockMaster.php";
+    final String blueToothUrl="http://120.79.91.50/DreamBike/DreamBike_bluetoothlockMaster.php";
+    /**出行记录**/
+    private String tripRecordjsonData;
+    final String tripRecordUrl="http://120.79.91.50/DreamBike/DreamBike_triprecord.php";
+    /**逆地理编码*/
+    private GeocodeSearch geocodeSearch;
+    private String addressName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,6 +209,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
             public void onClick(View v) {
                 new GetMarker().execute(markerUrl);
                 refresh.startAnimation(circle_anim);
+                getAddress(mStartPoint);
                 showMyDialog();
             }
         });
@@ -227,7 +238,30 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         navView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener(){
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                mDrawerLayout.closeDrawers();
+                switch (item.getItemId()){
+                    case R.id.nav_triprecord:
+                        if (isLogin==false){
+                            Toast.makeText(MainActivity.this,"请登录后再查看骑行记录！",Toast.LENGTH_LONG).show();
+                        }else{
+                            Intent intent=new Intent(MainActivity.this,TripRecord.class);
+                            intent.putExtra("tripRecordjsonData",tripRecordjsonData);
+                            startActivity(intent);
+                        }
+
+                        break;
+                    case R.id.nav_wallet:
+                        if (isLogin==false){
+                            Toast.makeText(MainActivity.this,"请登录后再查看钱包！",Toast.LENGTH_LONG).show();
+                        }else{
+                            Intent intent=new Intent(MainActivity.this,WalletActivity.class);
+                            startActivity(intent);
+                        }
+                        break;
+                    case R.id.nav_location:
+                        getAddress(mStartPoint);
+                        break;
+                    default:
+                }
                 return true;
             }
         });
@@ -314,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                     if (bundle.getInt(CodeUtils.RESULT_TYPE)==CodeUtils.RESULT_SUCCESS){
                         QRresult=bundle.getString(CodeUtils.RESULT_STRING);
                         Toast.makeText(this,"解析结果："+QRresult,Toast.LENGTH_LONG).show();
-                        new Modifybluetoothlock().execute(url);
+                        new Modifybluetoothlock().execute(blueToothUrl);
                     }else if (bundle.getInt(CodeUtils.RESULT_TYPE)==CodeUtils.RESULT_FAILED){
                         Toast.makeText(this,"解析二维码失败",Toast.LENGTH_LONG).show();
                     }
@@ -331,6 +365,8 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
 
             mRouteSearch=new RouteSearch(this);
             mRouteSearch.setRouteSearchListener(this);
+            geocodeSearch=new GeocodeSearch(this);
+            geocodeSearch.setOnGeocodeSearchListener(this);
         }
         registerListener();
     }
@@ -381,6 +417,12 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                 .showMyLocation(true);
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.setMyLocationEnabled(true);
+    }
+    /**响应逆地理编码*/
+    public void getAddress(final LatLonPoint latLonPoint){
+        RegeocodeQuery query=new RegeocodeQuery(latLonPoint,200,
+                GeocodeSearch.AMAP);
+        geocodeSearch.getFromLocationAsyn(query);
     }
 
     /**开始搜索路径规划方案*/
@@ -586,6 +628,26 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         }
         startActivity(intent);
     }
+    /**逆地理编码*/
+    @Override
+    public void onRegeocodeSearched(RegeocodeResult result, int rCode) {
+        if (rCode==AMapException.CODE_AMAP_SUCCESS){
+            if (result!=null&&result.getRegeocodeAddress()!=null
+                    &&result.getRegeocodeAddress().getFormatAddress()!=null){
+                addressName=result.getRegeocodeAddress().getCity();//仅获取城市名称
+                ToastUtil.show(MainActivity.this,addressName);
+            }else{
+                ToastUtil.show(MainActivity.this,"对不起，没有搜索到相关数据！");
+            }
+        }else{
+            ToastUtil.showerror(this,rCode);
+        }
+    }
+
+    @Override
+    public void onGeocodeSearched(GeocodeResult geocodeResult, int i) {
+
+    }
     /******************************class define****************************************************************/
     /**继承BroadcastReceiver类重写onReceive()函数，实现想要的功能*/
     class LocalBroadcastReceiver extends BroadcastReceiver{
@@ -596,6 +658,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
             Login_username.setText(username);
             Login_mail.setText(email);
             isLogin=true;//表示已经成功登录
+            new getTripRecord().execute(tripRecordUrl);//TODO
             Toast.makeText(MainActivity.this,"log in successfully!",Toast.LENGTH_LONG).show();
         }
     }
@@ -666,6 +729,37 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         protected void onPostExecute(String result) {
             loadingbar.setVisibility(View.INVISIBLE);
             Toast.makeText(MainActivity.this, result+"解锁成功！", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public class getTripRecord extends AsyncTask<String,Void,String>{
+
+        @Override
+        protected String doInBackground(String... urls) {
+            String jsonData=null;
+            try{
+                OkHttpClient client=new OkHttpClient();
+                RequestBody requestBody=new FormBody.Builder()
+                        .add("email",Login_mail.getText().toString().trim())
+                        .build();
+                Request request=new Request.Builder()
+                        .url(urls[0])
+                        .post(requestBody)
+                        .build();
+                Response response=client.newCall(request).execute();
+                if (response.code()==200){
+                    jsonData=response.body().string();
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+            return jsonData;
+        }
+
+        @Override
+        protected void onPostExecute(String jsonData) {
+            tripRecordjsonData=jsonData;
+            Toast.makeText(MainActivity.this,"骑行记录加载完成！",Toast.LENGTH_LONG).show();//测试成功
         }
     }
 }

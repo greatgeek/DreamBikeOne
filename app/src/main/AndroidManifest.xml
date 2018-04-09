@@ -33,7 +33,8 @@
             android:name="com.amap.api.v2.apikey"
             android:value="dbafd5235dbe0cd065f0cbb7fddd3d8f" />
 
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:theme="@style/AppTheme.customTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -46,6 +47,9 @@
         <activity android:name=".InputtipsActivity" />
         <activity android:name=".route.RideRouteDetailActivity" />
         <activity android:name=".route.WalkRouteDetailActivity" />
+        <activity android:name=".TripRecord" />
+        <activity android:name=".MyTripActivity" />
+        <activity android:name=".WalletActivity"></activity>
     </application>
 
 </manifest>

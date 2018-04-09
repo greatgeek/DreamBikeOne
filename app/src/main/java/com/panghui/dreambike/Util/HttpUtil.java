@@ -9,6 +9,7 @@ import com.amap.api.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.panghui.dreambike.R;
+import com.panghui.dreambike.TripRecord;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -38,6 +39,27 @@ public class HttpUtil {
                 e.printStackTrace();
             }
             return user;
+        }
+
+        public static List<TripRecordItem> itemparseJSONWithJSONObjec(String jsonData){
+            List<TripRecordItem> itemList=new ArrayList<>();
+            try{
+                JSONArray jsonArray=new JSONArray(jsonData);
+                for (int i=0;i<jsonArray.length();i++){
+                    JSONObject jsonObject=jsonArray.getJSONObject(i);
+                    TripRecordItem item=new TripRecordItem();
+                    item.setEmail(jsonObject.getString("email"));
+                    item.setUser_slatitude(jsonObject.getString("user_slatitude"));
+                    item.setUser_slongtitude(jsonObject.getString("user_slongtitude"));
+                    item.setUser_dlatitude(jsonObject.getString("user_dlatitude"));
+                    item.setUser_dlongtitude(jsonObject.getString("user_dlongtitude"));
+                    item.setCreatetime(jsonObject.getString("createtime"));
+                    itemList.add(item);
+                }
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            return itemList;
         }
 
         public static ArrayList<MarkerOptions> MarkerparseJSONWithJSONObject(String jsonData){//解析JSON数据并返回一个List<MarkerOptions>
