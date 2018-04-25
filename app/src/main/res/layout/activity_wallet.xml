@@ -1,9 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".WalletActivity">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="380dp"
+    android:layout_height="650dp"
+    android:background="@drawable/dialog_background">
+    <RelativeLayout
+        android:id="@+id/relativelayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/wallet"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-</android.support.constraint.ConstraintLayout>
+        <TextView
+            android:id="@+id/balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/charge"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="20dp"
+            android:text="余额7元"
+            android:textAllCaps="true"
+            android:textSize="22dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/charge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="260dp"
+            android:layout_marginTop="195dp"
+            android:text="立即充值"
+            android:textSize="16dp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/linearlayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/relativelayout"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:text="梦想单车卡"
+            android:textAllCaps="false"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/bikeCard"
+            android:layout_width="260dp"
+            android:layout_height="60dp"
+            android:text="0张 >"
+            android:textAlignment="textEnd"
+            android:textSize="16dp"
+            android:background="@color/transparent"/>
+    </LinearLayout>
+    <View
+        android:id="@+id/view1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#878686"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/linearlayout1"
+        android:layout_marginTop="5dp"/>
+    <LinearLayout
+        android:id="@+id/linearlayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/view1"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:text="红包收入"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/red_envelope"
+            android:layout_width="260dp"
+            android:layout_height="60dp"
+            android:text="0元 >"
+            android:textAlignment="textEnd"
+            android:textSize="16dp"
+            android:background="@color/transparent"/>
+
+    </LinearLayout>
+    <View
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#878686"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/linearlayout2"
+        android:layout_marginTop="5dp"/>
+    <LinearLayout
+        android:id="@+id/linearlayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/view2"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:text="优惠券"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/coupon"
+            android:layout_width="260dp"
+            android:layout_height="60dp"
+            android:text="2张 >"
+            android:textAlignment="textEnd"
+            android:textSize="16dp"
+            android:background="@color/transparent"/>
+    </LinearLayout>
+    <View
+        android:id="@+id/view3"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#878686"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/linearlayout3"
+        android:layout_marginTop="5dp"/>
+    <LinearLayout
+        android:id="@+id/linearlayout4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/view3"
+        android:layout_marginTop="5dp">
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:text="押金"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/deposit"
+            android:layout_width="260dp"
+            android:layout_height="60dp"
+            android:text="已交 >"
+            android:textAlignment="textEnd"
+            android:textSize="16dp"
+            android:background="@color/transparent"/>
+    </LinearLayout>
+
+
+
+
+</RelativeLayout>

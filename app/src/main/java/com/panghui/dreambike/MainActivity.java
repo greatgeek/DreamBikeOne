@@ -131,6 +131,8 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     private GeocodeSearch geocodeSearch;
     private String addressName;
 
+    //
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -241,24 +243,32 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                 switch (item.getItemId()){
                     case R.id.nav_triprecord:
                         if (isLogin==false){
-                            Toast.makeText(MainActivity.this,"请登录后再查看骑行记录！",Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this,"请登录后再查看骑行记录！",Toast.LENGTH_SHORT).show();
                         }else{
                             Intent intent=new Intent(MainActivity.this,TripRecord.class);
                             intent.putExtra("tripRecordjsonData",tripRecordjsonData);
                             startActivity(intent);
+                            overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
                         }
 
                         break;
                     case R.id.nav_wallet:
                         if (isLogin==false){
-                            Toast.makeText(MainActivity.this,"请登录后再查看钱包！",Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this,"请登录后再查看钱包！",Toast.LENGTH_SHORT).show();
                         }else{
                             Intent intent=new Intent(MainActivity.this,WalletActivity.class);
                             startActivity(intent);
+                            overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
                         }
                         break;
                     case R.id.nav_location:
                         getAddress(mStartPoint);
+                        break;
+                    case R.id.nav_owner:
+                        item.setIcon(R.drawable.nav_owner);
+                        Intent intent=new Intent(MainActivity.this,DreamBikeOwnerActivity.class);
+                        startActivity(intent);
+                        overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
                         break;
                     default:
                 }
