@@ -4,7 +4,7 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.panghui.dreambike"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 23
         //Android6.0系统默认为targetSdkVersion小于23的应用默认授予了所申请的所有权限，所以如果你APP设置的targetVersion低于23，在运行时也不会崩溃
         versionCode 1

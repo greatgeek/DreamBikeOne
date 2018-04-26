@@ -46,6 +46,17 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginBottom="15dp"
                 android:layout_marginRight="15dp"/>
+
+            <ImageView
+                android:id="@+id/endTrip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="15dp"
+                android:layout_marginRight="15dp"
+                android:visibility="invisible"/>
             <ProgressBar
                 android:id="@+id/loading_bar"
                 android:layout_width="42dp"

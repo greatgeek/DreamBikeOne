@@ -7,8 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.renderscript.ScriptGroup;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -53,6 +57,8 @@ import com.amap.api.services.route.WalkPath;
 import com.amap.api.services.route.WalkRouteResult;
 import com.panghui.dreambike.Util.HttpUtil;
 import com.panghui.dreambike.Util.ToastUtil;
+import com.panghui.dreambike.Util.TripRecordItem;
+import com.panghui.dreambike.base.AppConst;
 import com.panghui.dreambike.dialog.LoadDialog;
 import com.panghui.dreambike.dialog.MyLoadDialog;
 import com.panghui.dreambike.overlay.RideRouteOverlay;
@@ -117,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     private ImageView refresh;
     private ImageView search_iv;
     private ImageView scancode_iv;
+    private ImageView endTrip;
     private ProgressBar loadingbar;
     /**marker数据*/
     String markerlocjsonData=null;
@@ -126,17 +133,25 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     final String blueToothUrl="http://120.79.91.50/DreamBike/DreamBike_bluetoothlockMaster.php";
     /**出行记录**/
     private String tripRecordjsonData;
+    private int tripRecordid;//出行记录id
     final String tripRecordUrl="http://120.79.91.50/DreamBike/DreamBike_triprecord.php";
+    final String createTripRecordUrl="http://120.79.91.50/DreamBike/DreamBike_createtriprecord.php";
+    final String updateTripRecordUrl="http://120.79.91.50/DreamBike/DreamBike_updatetriprecord.php";
     /**逆地理编码*/
     private GeocodeSearch geocodeSearch;
     private String addressName;
 
-    //
+    /**上下文*/
+    private Context mContext;
+    private Resources mResources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        /**获取上下文*/
+        mContext=getApplicationContext();
+        mResources=getResources();
 
         /**Login部分初始化*/
         mDrawerLayout=(DrawerLayout)findViewById(R.id.drawer_layout);
@@ -156,6 +171,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         refresh=(ImageView)findViewById(R.id.iv_refresh);
         search_iv=(ImageView)findViewById(R.id.iv_search);
         scancode_iv=(ImageView)findViewById(R.id.iv_scan_code);
+        endTrip=(ImageView)findViewById(R.id.endTrip);
         mMapView.onCreate(savedInstanceState);
         /**加载圈*/
         loadingbar=(ProgressBar)findViewById(R.id.loading_bar);
@@ -225,6 +241,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         });
         /**二维码扫描按钮点击事件*/
         scancode_iv.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 if (!isLogin){
@@ -233,6 +250,15 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                     Intent intent=new Intent(MainActivity.this, CaptureActivity.class);
                     startActivityForResult(intent,REQUEST_SCANQR);
                 }
+            }
+        });
+        /**结束行程点击事件*///TODO
+        endTrip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String lat = new Double(mStartPoint.getLatitude()).toString();
+                String lon = new Double(mStartPoint.getLongitude()).toString();
+                HttpUtil.updateTripRecord(mhandler,updateTripRecordUrl,tripRecordid,lat,lon);
             }
         });
 
@@ -728,6 +754,11 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                 Response response=client.newCall(request).execute();
                 if (response.code()==200){
                     result=response.body().string();
+                    //TODO 创建骑行记录并插入起始坐标
+                    String lat=new Double(mStartPoint.getLatitude()).toString();
+                    String lon=new Double(mStartPoint.getLongitude()).toString();
+                    String email= Login_mail.getText().toString().trim();
+                    HttpUtil.createTripRecord(mhandler,createTripRecordUrl,tripRecordid,email,lat,lon);
                 }
             }catch(Exception e){
                 e.printStackTrace();
@@ -769,7 +800,62 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         @Override
         protected void onPostExecute(String jsonData) {
             tripRecordjsonData=jsonData;
+            List<TripRecordItem> tripRecord = HttpUtil.itemparseJSONWithJSONObjec(tripRecordjsonData);
+            tripRecordid=tripRecord.size()+1;//获得出行记录id
             Toast.makeText(MainActivity.this,"骑行记录加载完成！",Toast.LENGTH_LONG).show();//测试成功
         }
+    }
+
+    private  Handler mhandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch(msg.what){
+                case AppConst.CREATE_TRIP_RECORD_SUCCES:
+                    Toast.makeText(mContext,"解锁成功，祝您骑行愉快！",Toast.LENGTH_SHORT).show();
+
+                    scancode_iv.setVisibility(View.INVISIBLE);
+                    /**解锁成功后，显示为解锁状态，设置为可点击*/
+                    Drawable drawable1 = mResources.getDrawable(R.drawable.lockopen_selector);
+                    endTrip.setBackground(drawable1);
+                    endTrip.setVisibility(View.VISIBLE);
+                    endTrip.setClickable(true);
+
+
+
+                    break;
+                case AppConst.CREATE_TRIP_RECORD_FAIL:
+                    Toast.makeText(mContext,"创建出行记录失败！",Toast.LENGTH_SHORT).show();
+                    break;
+                case AppConst.UPDATE_TRIP_RECORD_SUCCESS:
+                    Toast.makeText(mContext,"已结束骑行！",Toast.LENGTH_SHORT).show();
+                    /**结束骑行后，显示为上锁状态，并设置为不可点击*/
+                    Drawable drawable2 = mResources.getDrawable(R.drawable.lock_selector);
+                    endTrip.setBackground(drawable2);
+                    endTrip.setClickable(false);
+                    disappearTheLock(mhandler);
+                    break;
+                case AppConst.UPDATE_TRIP_RECORD_FAIL:
+                    Toast.makeText(mContext,"更新出行记录失败！",Toast.LENGTH_SHORT).show();
+                    break;
+                case AppConst.LOCK_DISAPPEAR:
+                    endTrip.setVisibility(View.INVISIBLE);
+                    scancode_iv.setVisibility(View.VISIBLE);
+            }
+        }
+    };
+
+    private void disappearTheLock(final Handler mhandler){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    Thread.sleep(3000);
+                    mhandler.obtainMessage(AppConst.LOCK_DISAPPEAR).sendToTarget();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
     }
 }

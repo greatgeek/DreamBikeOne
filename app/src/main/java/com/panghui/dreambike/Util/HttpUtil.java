@@ -1,5 +1,6 @@
 package com.panghui.dreambike.Util;
 
+import android.os.Handler;
 import android.util.Log;
 
 import com.amap.api.maps.model.BitmapDescriptor;
@@ -10,6 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.panghui.dreambike.R;
 import com.panghui.dreambike.TripRecord;
+import com.panghui.dreambike.base.AppConst;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -96,5 +98,68 @@ public class HttpUtil {
                 e.printStackTrace();
             }
             return markerOptions;
+        }
+
+        //TODO
+        public static void createTripRecord(final Handler mhandler,final String url,final int id,final String email,
+                                            final String user_slatitude,final String user_slongtitude){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        OkHttpClient client = new OkHttpClient();
+                        RequestBody requestBody = new FormBody.Builder()
+                                .add("id",new Integer(id).toString())
+                                .add("email",email)
+                                .add("user_slatitude",user_slatitude)
+                                .add("user_slongtitude",user_slongtitude)
+                                .build();
+                        Request request = new Request.Builder()
+                                .url(url)
+                                .post(requestBody)
+                                .build();
+                        Response response = client.newCall(request).execute();
+                        if (response.code()==200){
+                            Log.d("createTripRecord()","插入数据成功!");
+                            mhandler.obtainMessage(AppConst.CREATE_TRIP_RECORD_SUCCES).sendToTarget();
+                        }else{
+                            mhandler.obtainMessage(AppConst.CREATE_TRIP_RECORD_FAIL).sendToTarget();
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+        }
+
+        public static void updateTripRecord(final Handler mhandler, final String url, final int id,
+                                            final String user_dlatitude, final String user_dlongtitude){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        OkHttpClient client = new OkHttpClient();
+                        RequestBody requestBody = new FormBody.Builder()
+                                .add("id",new Integer(id).toString())
+                                .add("user_dlatitude",user_dlatitude)
+                                .add("user_dlongtitude",user_dlongtitude)
+                                .build();
+                        Request request = new Request.Builder()
+                                .url(url)
+                                .post(requestBody)
+                                .build();
+                        Response response = client.newCall(request).execute();
+                        if (response.code()==200){
+                            Log.d("updateTripRecord()","更新数据成功!");
+                            mhandler.obtainMessage(AppConst.UPDATE_TRIP_RECORD_SUCCESS).sendToTarget();
+                        }else{
+                            mhandler.obtainMessage(AppConst.UPDATE_TRIP_RECORD_FAIL).sendToTarget();
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
         }
 }
