@@ -272,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                             Toast.makeText(MainActivity.this,"请登录后再查看骑行记录！",Toast.LENGTH_SHORT).show();
                         }else{
                             Intent intent=new Intent(MainActivity.this,TripRecord.class);
-                            intent.putExtra("tripRecordjsonData",tripRecordjsonData);
+                            intent.putExtra("email",Login_mail.getText().toString().trim());
                             startActivity(intent);
                             overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
                         }
@@ -755,10 +755,12 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                 if (response.code()==200){
                     result=response.body().string();
                     //TODO 创建骑行记录并插入起始坐标
-                    String lat=new Double(mStartPoint.getLatitude()).toString();
-                    String lon=new Double(mStartPoint.getLongitude()).toString();
-                    String email= Login_mail.getText().toString().trim();
-                    HttpUtil.createTripRecord(mhandler,createTripRecordUrl,tripRecordid,email,lat,lon);
+                    if (result.trim().equals("megneto")){//在PHP脚本中，若是成功更新了状态则会返回megneto，其他情况不会返回此值
+                        String lat=new Double(mStartPoint.getLatitude()).toString();
+                        String lon=new Double(mStartPoint.getLongitude()).toString();
+                        String email= Login_mail.getText().toString().trim();
+                        HttpUtil.createTripRecord(mhandler,createTripRecordUrl,tripRecordid,email,lat,lon);
+                    }
                 }
             }catch(Exception e){
                 e.printStackTrace();
@@ -769,7 +771,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         @Override
         protected void onPostExecute(String result) {
             loadingbar.setVisibility(View.INVISIBLE);
-            Toast.makeText(MainActivity.this, result+"解锁成功！", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(MainActivity.this, result+"解锁成功！", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -802,7 +804,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
             tripRecordjsonData=jsonData;
             List<TripRecordItem> tripRecord = HttpUtil.itemparseJSONWithJSONObjec(tripRecordjsonData);
             tripRecordid=tripRecord.size()+1;//获得出行记录id
-            Toast.makeText(MainActivity.this,"骑行记录加载完成！",Toast.LENGTH_LONG).show();//测试成功
+            //Toast.makeText(MainActivity.this,"骑行记录加载完成！",Toast.LENGTH_LONG).show();//测试成功
         }
     }
 

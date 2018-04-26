@@ -55,20 +55,21 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <Button
             android:id="@+id/login"
-            android:layout_width="0dp"
-            android:layout_weight="5"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="login"
-            android:background="@drawable/button_shape1"/>
+            android:layout_marginLeft="100dp"
+            android:background="@drawable/button_selector2"
+            android:text="login" />
         <Button
             android:id="@+id/regist"
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="140dp"
             android:text="regist"
             android:textSize="10sp"
-            android:background="@android:color/transparent"/>
+            android:background="@drawable/button_selector1"/>
     </LinearLayout>
 </LinearLayout>
