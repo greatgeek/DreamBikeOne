@@ -11,4 +11,6 @@ public class AppConst {
 
     public static final int RECHARGE_SUCCESS=8;
     public static final int RECHARGE_FAIL=9;
+
+    public static final int TIME_DIFF_SUCCESS=10;
 }

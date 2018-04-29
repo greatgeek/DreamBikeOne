@@ -134,10 +134,11 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     final String blueToothUrl="http://120.79.91.50/DreamBike/DreamBike_bluetoothlockMaster.php";
     /**出行记录**/
     private String tripRecordjsonData;
-    private int tripRecordid;//出行记录id
+    private int tripRecord_fakeid;//出行记录id
     final String tripRecordUrl="http://120.79.91.50/DreamBike/DreamBike_triprecord.php";
     final String createTripRecordUrl="http://120.79.91.50/DreamBike/DreamBike_createtriprecord.php";
     final String updateTripRecordUrl="http://120.79.91.50/DreamBike/DreamBike_updatetriprecord.php";
+    final String timeDiffUrl="http://120.79.91.50/DreamBike/DreamBike_timedifference.php";
     /**逆地理编码*/
     private GeocodeSearch geocodeSearch;
     private String addressName;
@@ -265,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
             public void onClick(View v) {
                 String lat = new Double(mStartPoint.getLatitude()).toString();
                 String lon = new Double(mStartPoint.getLongitude()).toString();
-                HttpUtil.updateTripRecord(mhandler,updateTripRecordUrl,tripRecordid,lat,lon);
+                HttpUtil.updateTripRecord(mhandler,updateTripRecordUrl,tripRecord_fakeid,user.getEmail(),lat,lon);
             }
         });
 
@@ -764,8 +765,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                     if (result.trim().equals("megneto")){//在PHP脚本中，若是成功更新了状态则会返回megneto，其他情况不会返回此值
                         String lat=new Double(mStartPoint.getLatitude()).toString();
                         String lon=new Double(mStartPoint.getLongitude()).toString();
-                        String email= Login_mail.getText().toString().trim();
-                        HttpUtil.createTripRecord(mhandler,createTripRecordUrl,tripRecordid,email,lat,lon);
+                        HttpUtil.createTripRecord(mhandler,createTripRecordUrl,tripRecord_fakeid,user.getEmail(),lat,lon);
                     }
                 }
             }catch(Exception e){
@@ -809,7 +809,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         protected void onPostExecute(String jsonData) {
             tripRecordjsonData=jsonData;
             List<TripRecordItem> tripRecord = HttpUtil.itemparseJSONWithJSONObjec(tripRecordjsonData);
-            tripRecordid=tripRecord.size()+1;//获得出行记录id
+            tripRecord_fakeid=tripRecord.size()+1;//获得出行记录id
             //Toast.makeText(MainActivity.this,"骑行记录加载完成！",Toast.LENGTH_LONG).show();//测试成功
         }
     }
@@ -840,6 +840,8 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                     Drawable drawable2 = mResources.getDrawable(R.drawable.lock_selector);
                     endTrip.setBackground(drawable2);
                     endTrip.setClickable(false);
+                    //TODO
+                    HttpUtil.timeDiff(mhandler,timeDiffUrl,user.getEmail(),tripRecord_fakeid);
                     disappearTheLock(mhandler);
                     break;
                 case AppConst.UPDATE_TRIP_RECORD_FAIL:
@@ -848,6 +850,10 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                 case AppConst.LOCK_DISAPPEAR:
                     endTrip.setVisibility(View.INVISIBLE);
                     scancode_iv.setVisibility(View.VISIBLE);
+                    break;
+                case AppConst.TIME_DIFF_SUCCESS:
+                    String data=(String)msg.obj;
+                    Toast.makeText(mContext,"本次骑行时间为"+data+"分钟",Toast.LENGTH_SHORT).show();
             }
         }
     };

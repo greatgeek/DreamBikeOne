@@ -53,7 +53,7 @@ public class ChargeActivity extends AppCompatActivity {
                     }
 
                 }else{
-                    Toast.makeText(ChargeActivity.this,"密码输入错误！", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ChargeActivity.this,"密码输入错误,请重新输入！", Toast.LENGTH_SHORT).show();
                 }
             }
         });

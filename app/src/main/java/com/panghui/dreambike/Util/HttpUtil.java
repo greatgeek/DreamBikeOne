@@ -102,7 +102,7 @@ public class HttpUtil {
         }
 
         //TODO
-        public static void createTripRecord(final Handler mhandler,final String url,final int id,final String email,
+        public static void createTripRecord(final Handler mhandler,final String url,final int fake_id,final String email,
                                             final String user_slatitude,final String user_slongtitude){
             new Thread(new Runnable() {
                 @Override
@@ -110,7 +110,7 @@ public class HttpUtil {
                     try{
                         OkHttpClient client = new OkHttpClient();
                         RequestBody requestBody = new FormBody.Builder()
-                                .add("id",new Integer(id).toString())
+                                .add("fake_id",new Integer(fake_id).toString())
                                 .add("email",email)
                                 .add("user_slatitude",user_slatitude)
                                 .add("user_slongtitude",user_slongtitude)
@@ -134,7 +134,7 @@ public class HttpUtil {
 
         }
 
-        public static void updateTripRecord(final Handler mhandler, final String url, final int id,
+        public static void updateTripRecord(final Handler mhandler, final String url, final int fake_id,final String email,
                                             final String user_dlatitude, final String user_dlongtitude){
             new Thread(new Runnable() {
                 @Override
@@ -142,7 +142,8 @@ public class HttpUtil {
                     try{
                         OkHttpClient client = new OkHttpClient();
                         RequestBody requestBody = new FormBody.Builder()
-                                .add("id",new Integer(id).toString())
+                                .add("fake_id",new Integer(fake_id).toString())
+                                .add("email",email)
                                 .add("user_dlatitude",user_dlatitude)
                                 .add("user_dlongtitude",user_dlongtitude)
                                 .build();
@@ -186,6 +187,32 @@ public class HttpUtil {
                             }else{
                                 mhandler.obtainMessage(AppConst.RECHARGE_FAIL).sendToTarget();
                             }
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
+        public static void timeDiff(final Handler mhandler,final String url,final String email,final int fake_id ){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        OkHttpClient client = new OkHttpClient();
+                        RequestBody requestBody = new FormBody.Builder()
+                                .add("email", email)
+                                .add("fake_id",new Integer(fake_id).toString())
+                                .build();
+                        Request request = new Request.Builder()
+                                .url(url)
+                                .post(requestBody)
+                                .build();
+                        Response response = client.newCall(request).execute();
+                        if (response.code()==200){
+                            String timevalue=response.body().string().trim();
+                            mhandler.obtainMessage(AppConst.TIME_DIFF_SUCCESS,timevalue).sendToTarget();
                         }
                     }catch (Exception e){
                         e.printStackTrace();
