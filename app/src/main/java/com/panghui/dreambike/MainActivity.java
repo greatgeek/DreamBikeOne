@@ -180,7 +180,8 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         /**加载圈*/
         loadingbar=(ProgressBar)findViewById(R.id.loading_bar);
         /**用户属性*/
-        user=new User();
+        user=User.getInstance();
+
         /**二维码扫描部分*/
         ZXingLibrary.initDisplayOpinion(this);
 
@@ -289,7 +290,6 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                             Toast.makeText(MainActivity.this,"请登录后再查看钱包！",Toast.LENGTH_SHORT).show();
                         }else{
                             Intent intent=new Intent(MainActivity.this,WalletActivity.class);
-                            intent.putExtra("user",user);
                             startActivity(intent);
                             overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
                         }
@@ -696,8 +696,6 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     class LocalBroadcastReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
-
-            user=(User)intent.getSerializableExtra("user");
 
             Login_username.setText(user.getUsername());
             Login_mail.setText(user.getEmail());

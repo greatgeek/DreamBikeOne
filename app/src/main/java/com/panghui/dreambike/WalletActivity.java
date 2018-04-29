@@ -31,8 +31,7 @@ public class WalletActivity extends AppCompatActivity {
         balance=(TextView)findViewById(R.id.balance);
         wallet=(ImageView)findViewById(R.id.wallet);
 
-        Intent intent=getIntent();
-        user=(User)intent.getSerializableExtra("user");
+        user=User.getInstance();
         balance.setText(user.getBalance());//设置初始balance;
 
         /**为图片实现圆角*/
@@ -48,12 +47,15 @@ public class WalletActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent=new Intent(WalletActivity.this,ChargeActivity.class);
-                intent.putExtra("user",user);
                 startActivity(intent);
                 overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
             }
         });
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        balance.setText(user.getBalance());
+    }
 }

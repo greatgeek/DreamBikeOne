@@ -28,8 +28,8 @@ import okhttp3.Response;
 
 public class HttpUtil {
         /**利用JSONObject来解析JSON数据*/
-        public static User parseJSONWithJSONObject(String jsonData){
-            User user=new User();
+        public static void parseJSONWithJSONObject(String jsonData){
+            User user=User.getInstance();
             try{
                 JSONArray jsonArray=new JSONArray(jsonData);
                 for (int i=0;i<jsonArray.length();i++){
@@ -42,7 +42,6 @@ public class HttpUtil {
             }catch (Exception e){
                 e.printStackTrace();
             }
-            return user;
         }
 
         public static List<TripRecordItem> itemparseJSONWithJSONObjec(String jsonData){
@@ -157,6 +156,36 @@ public class HttpUtil {
                             mhandler.obtainMessage(AppConst.UPDATE_TRIP_RECORD_SUCCESS).sendToTarget();
                         }else{
                             mhandler.obtainMessage(AppConst.UPDATE_TRIP_RECORD_FAIL).sendToTarget();
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+        }
+
+        public static void charge(final Handler mhandler,final String url,final String email,final String balance){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        OkHttpClient client = new OkHttpClient();
+                        RequestBody requestBody = new FormBody.Builder()
+                                .add("email",email)
+                                .add("balance",balance)
+                                .build();
+                        Request request = new Request.Builder()
+                                .url(url)
+                                .post(requestBody)
+                                .build();
+                        Response response = client.newCall(request).execute();
+                        if (response.code()==200){
+                            String data=response.body().string().trim();
+                            if (data.equals("megneto")){
+                                mhandler.obtainMessage(AppConst.RECHARGE_SUCCESS).sendToTarget();
+                            }else{
+                                mhandler.obtainMessage(AppConst.RECHARGE_FAIL).sendToTarget();
+                            }
                         }
                     }catch (Exception e){
                         e.printStackTrace();

@@ -5,19 +5,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.google.gson.Gson;
 import com.panghui.dreambike.Util.HttpUtil;
 import com.panghui.dreambike.Util.User;
 
@@ -33,7 +30,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private EditText password;
     private Button Login_bt;
     private Button Register_bt;
-    private User user;
     /**记住密码*/
     private CheckBox rememberPass;
     private SharedPreferences pref;
@@ -122,12 +118,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                         });
 
                                     }else {
-                                        user = HttpUtil.parseJSONWithJSONObject(jsondata);
+                                        HttpUtil.parseJSONWithJSONObject(jsondata);
                                         runOnUiThread(new Runnable() {
                                             @Override
                                             public void run() {
                                                 Intent intent=new Intent("com.panghui.dreambike.LOCAL_BROADCAST");
-                                                intent.putExtra("user",user);
                                                 localBroadcastManager.sendBroadcast(intent);
                                                 finish();
                                             }

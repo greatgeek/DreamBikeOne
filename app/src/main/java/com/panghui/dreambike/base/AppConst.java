@@ -8,4 +8,7 @@ public class AppConst {
     public static final int UPDATE_TRIP_RECORD_FAIL=6;
 
     public static final int LOCK_DISAPPEAR=7;
+
+    public static final int RECHARGE_SUCCESS=8;
+    public static final int RECHARGE_FAIL=9;
 }

@@ -12,6 +12,16 @@ public class User implements Serializable {
     private String password;
     private String balance;
 
+    private static class UserHolder{
+        private static final User INSTANCE = new User();
+    }
+
+    private User(){}
+
+    public static final User getInstance(){
+        return UserHolder.INSTANCE;
+    }
+
     public String getEmail() {
         return email;
     }
