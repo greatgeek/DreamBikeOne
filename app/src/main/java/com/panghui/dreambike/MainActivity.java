@@ -58,6 +58,7 @@ import com.amap.api.services.route.WalkRouteResult;
 import com.panghui.dreambike.Util.HttpUtil;
 import com.panghui.dreambike.Util.ToastUtil;
 import com.panghui.dreambike.Util.TripRecordItem;
+import com.panghui.dreambike.Util.User;
 import com.panghui.dreambike.base.AppConst;
 import com.panghui.dreambike.dialog.LoadDialog;
 import com.panghui.dreambike.dialog.MyLoadDialog;
@@ -145,6 +146,9 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     private Context mContext;
     private Resources mResources;
 
+    /**用户属性*/
+    private User user;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -175,6 +179,8 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         mMapView.onCreate(savedInstanceState);
         /**加载圈*/
         loadingbar=(ProgressBar)findViewById(R.id.loading_bar);
+        /**用户属性*/
+        user=new User();
         /**二维码扫描部分*/
         ZXingLibrary.initDisplayOpinion(this);
 
@@ -283,6 +289,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                             Toast.makeText(MainActivity.this,"请登录后再查看钱包！",Toast.LENGTH_SHORT).show();
                         }else{
                             Intent intent=new Intent(MainActivity.this,WalletActivity.class);
+                            intent.putExtra("user",user);
                             startActivity(intent);
                             overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
                         }
@@ -689,10 +696,11 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     class LocalBroadcastReceiver extends BroadcastReceiver{
         @Override
         public void onReceive(Context context, Intent intent) {
-            String username=intent.getStringExtra("username");
-            String email=intent.getStringExtra("email");
-            Login_username.setText(username);
-            Login_mail.setText(email);
+
+            user=(User)intent.getSerializableExtra("user");
+
+            Login_username.setText(user.getUsername());
+            Login_mail.setText(user.getEmail());
             isLogin=true;//表示已经成功登录
             new getTripRecord().execute(tripRecordUrl);//TODO
             Toast.makeText(MainActivity.this,"log in successfully!",Toast.LENGTH_LONG).show();

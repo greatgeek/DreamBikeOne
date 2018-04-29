@@ -127,8 +127,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             @Override
                                             public void run() {
                                                 Intent intent=new Intent("com.panghui.dreambike.LOCAL_BROADCAST");
-                                                intent.putExtra("username",user.getUsername());
-                                                intent.putExtra("email",user.getEmail());
+                                                intent.putExtra("user",user);
                                                 localBroadcastManager.sendBroadcast(intent);
                                                 finish();
                                             }

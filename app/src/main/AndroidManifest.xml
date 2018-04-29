@@ -44,15 +44,20 @@
         </activity>
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
-        <activity android:name=".InputtipsActivity"/>
+        <activity android:name=".InputtipsActivity" />
         <activity android:name=".route.RideRouteDetailActivity" />
         <activity android:name=".route.WalkRouteDetailActivity" />
-        <activity android:name=".TripRecord"
-            android:theme="@style/DialogActivitySytle"></activity>
+        <activity
+            android:name=".TripRecord"
+            android:theme="@style/DialogActivitySytle" />
         <activity android:name=".MyTripActivity" />
-        <activity android:name=".WalletActivity"
-            android:theme="@style/DialogActivitySytle"></activity>
-        <activity android:name=".DreamBikeOwnerActivity"
+        <activity
+            android:name=".WalletActivity"
+            android:theme="@style/DialogActivitySytle" />
+        <activity
+            android:name=".DreamBikeOwnerActivity"
+            android:theme="@style/DialogActivitySytle" />
+        <activity android:name=".ChargeActivity"
             android:theme="@style/DialogActivitySytle"></activity>
     </application>
 

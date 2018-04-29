@@ -37,6 +37,7 @@ public class HttpUtil {
                     user.setUsername(jsonObject.getString("username"));
                     user.setEmail(jsonObject.getString("email"));
                     user.setPassword(jsonObject.getString("password"));
+                    user.setBalance(jsonObject.getString("balance"));
                 }
             }catch (Exception e){
                 e.printStackTrace();

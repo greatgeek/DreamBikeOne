@@ -67,15 +67,20 @@
         <EditText
             android:id="@+id/time_from"
             android:layout_width="150dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:inputType="date"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="16dp"
             android:text="到"/>
         <EditText
+            android:id="@+id/time_to"
             android:layout_width="150dp"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:inputType="date"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
