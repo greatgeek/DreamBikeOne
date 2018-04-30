@@ -239,6 +239,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                 refresh.startAnimation(circle_anim);
                 getAddress(mStartPoint);
                 showMyDialog();
+                Zero_operation();
             }
         });
         /**搜索按钮点击事件*/
@@ -402,6 +403,11 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         }
     }
     /*******************************function define*******************************************************************/
+    /**归零操作*/
+    private void Zero_operation(){
+        rideOverlayCount=0;
+        walkOverlayCount=0;
+    }
     /**初始化AMap对象*/
     private void init(){
         if (aMap==null){
@@ -509,12 +515,16 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         mEndPoint=new LatLonPoint(marker.getPosition().latitude,marker.getPosition().longitude);
         if (tempMarker!=null){/**说明傀儡Marker已经指向一个Marker，有一个步行图层*/
             tempMarker=null;/**将傀儡Marker指向null*/
-            mWalkRouteOverlay.removeFromMap();/**去除上一点的图层*/
+            //mWalkRouteOverlay.removeFromMap();/**去除上一点的图层*/
             //mRideRouteOverlay.removeFromMap();
         }
         if (rideOverlayCount>0){
             mRideRouteOverlay.removeFromMap();
             rideOverlayCount=0;
+        }
+        if (walkOverlayCount>0){
+            mWalkRouteOverlay.removeFromMap();
+            walkOverlayCount=0;
         }
         searchRideRouteResult(ROUTE_TYPE_RIDE,RouteSearch.RIDING_DEFAULT);/**发起请求*/
         tempMarker=marker;
