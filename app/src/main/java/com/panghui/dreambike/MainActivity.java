@@ -132,9 +132,11 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     /**二维码扫描部分*/
     private String QRresult=null;
     final String blueToothUrl="http://120.79.91.50/DreamBike/DreamBike_bluetoothlockMaster.php";
-    /**出行记录**/
+    /**出行记录,扣费情况**/
     private String tripRecordjsonData;
     private int tripRecord_fakeid;//出行记录id
+    //TODO
+    private String spendmoney="10";
     final String tripRecordUrl="http://120.79.91.50/DreamBike/DreamBike_triprecord.php";
     final String createTripRecordUrl="http://120.79.91.50/DreamBike/DreamBike_createtriprecord.php";
     final String updateTripRecordUrl="http://120.79.91.50/DreamBike/DreamBike_updatetriprecord.php";
@@ -852,8 +854,12 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                     scancode_iv.setVisibility(View.VISIBLE);
                     break;
                 case AppConst.TIME_DIFF_SUCCESS:
-                    String data=(String)msg.obj;
-                    Toast.makeText(mContext,"本次骑行时间为"+data+"分钟",Toast.LENGTH_SHORT).show();
+                    spendmoney=(String)msg.obj;
+                    Toast.makeText(mContext,"本次骑行时间为"+spendmoney+"分钟",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(MainActivity.this,DeductionActivity.class);
+                    intent.putExtra("spendmoney",spendmoney);
+                    startActivity(intent);
+                    overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
             }
         }
     };

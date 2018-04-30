@@ -13,4 +13,7 @@ public class AppConst {
     public static final int RECHARGE_FAIL=9;
 
     public static final int TIME_DIFF_SUCCESS=10;
+
+    public static final int DEDUCTION_SUCCESS=11;
+    public static final int DEDUCTION_FAIL=12;
 }

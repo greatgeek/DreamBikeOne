@@ -14,7 +14,11 @@ import com.panghui.dreambike.Util.HttpUtil;
 import com.panghui.dreambike.Util.User;
 import com.panghui.dreambike.base.AppConst;
 
+import java.text.DecimalFormat;
+
 public class ChargeActivity extends AppCompatActivity {
+
+    private DecimalFormat df=new DecimalFormat("0.00");
     private EditText chargeblance;
     private EditText paypassword;
     private Button confirm;
@@ -41,10 +45,10 @@ public class ChargeActivity extends AppCompatActivity {
                     Toast.makeText(ChargeActivity.this, "金额或密码不能为空!", Toast.LENGTH_SHORT).show();
                 }else if(user.getPassword().equals(paypassword.getText().toString())){
                     try {
-                        int balanceInt = Integer.parseInt(user.getBalance());
-                        int chargeInput=Integer.parseInt(chargeblance.getText().toString());
-                        int sum=balanceInt+chargeInput;
-                        String balance=new Integer(sum).toString();
+                        double balanceDouble = Double.parseDouble(user.getBalance());
+                        double chargeInput=Double.parseDouble(chargeblance.getText().toString());
+                        double sum=balanceDouble+chargeInput;
+                        String balance=df.format(sum);
                         user.setBalance(balance);
                         HttpUtil.charge(mhandler,chargeUrl,user.getEmail(),user.getBalance());
 

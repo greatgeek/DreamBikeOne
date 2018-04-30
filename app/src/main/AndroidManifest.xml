@@ -57,7 +57,10 @@
         <activity
             android:name=".DreamBikeOwnerActivity"
             android:theme="@style/DialogActivitySytle" />
-        <activity android:name=".ChargeActivity"
+        <activity
+            android:name=".ChargeActivity"
+            android:theme="@style/DialogActivitySytle" />
+        <activity android:name=".DeductionActivity"
             android:theme="@style/DialogActivitySytle"></activity>
     </application>
 

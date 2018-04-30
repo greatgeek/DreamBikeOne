@@ -21,7 +21,6 @@ public class WalletActivity extends AppCompatActivity {
     private Button chargenow;
 
     private User user;
-    private int myBalance_int;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

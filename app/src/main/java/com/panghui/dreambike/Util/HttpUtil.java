@@ -195,6 +195,36 @@ public class HttpUtil {
             }).start();
         }
 
+    public static void deduct(final Handler mhandler,final String url,final String email,final String balance){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    OkHttpClient client = new OkHttpClient();
+                    RequestBody requestBody = new FormBody.Builder()
+                            .add("email",email)
+                            .add("balance",balance)
+                            .build();
+                    Request request = new Request.Builder()
+                            .url(url)
+                            .post(requestBody)
+                            .build();
+                    Response response = client.newCall(request).execute();
+                    if (response.code()==200){
+                        String data=response.body().string().trim();
+                        if (data.equals("megneto")){
+                            mhandler.obtainMessage(AppConst.DEDUCTION_SUCCESS).sendToTarget();
+                        }else{
+                            mhandler.obtainMessage(AppConst.DEDUCTION_FAIL).sendToTarget();
+                        }
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
         public static void timeDiff(final Handler mhandler,final String url,final String email,final int fake_id ){
             new Thread(new Runnable() {
                 @Override
