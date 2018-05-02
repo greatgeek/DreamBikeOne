@@ -251,4 +251,38 @@ public class HttpUtil {
             }).start();
         }
 
+        public static void lockTheBike(final Handler mhandler,final String url,final String bikeID){
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try{
+                        OkHttpClient client = new OkHttpClient();
+                        RequestBody requestBody = new FormBody.Builder()
+                                .add("bikeID",bikeID)
+                                .build();
+                        Request request = new Request.Builder()
+                                .url(url)
+                                .post(requestBody)
+                                .build();
+                        Response response = client.newCall(request).execute();
+                        if (response.code()==200){
+                            String result = response.body().string();
+                            if (result.trim().equals("megneto")){
+                                //TODO
+                                mhandler.obtainMessage(AppConst.LOCK_THE_BIKE_SUEECSS).sendToTarget();
+                            }else{
+                                mhandler.obtainMessage(AppConst.LOCK_THE_BIKE_FAIL).sendToTarget();
+                            }
+                        }else{
+                            mhandler.obtainMessage(AppConst.LOCK_THE_BIKE_FAIL).sendToTarget();
+                        }
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
+
+        }
+
 }

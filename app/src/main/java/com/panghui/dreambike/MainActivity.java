@@ -134,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     String markerlocjsonData=null;
     String markerUrl="http://120.79.91.50/locationTojson.php";
     /**二维码扫描部分*/
-    private String QRresult=null;
+    private String QRresult=null;//此QRresult即是单车ID
     final String blueToothUrl="http://120.79.91.50/DreamBike/DreamBike_bluetoothlockMaster.php";
     /**出行记录,扣费情况**/
     private String tripRecordjsonData;
@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     final String createTripRecordUrl="http://120.79.91.50/DreamBike/DreamBike_createtriprecord.php";
     final String updateTripRecordUrl="http://120.79.91.50/DreamBike/DreamBike_updatetriprecord.php";
     final String timeDiffUrl="http://120.79.91.50/DreamBike/DreamBike_timedifference.php";
+    final String lockTheBikeUrl="http://120.79.91.50/DreamBike/DreamBike_bluetoothlockbike.php";
     /**逆地理编码*/
     private GeocodeSearch geocodeSearch;
     private String addressName;
@@ -281,7 +282,9 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
             public void onClick(View v) {
                 String lat = new Double(mStartPoint.getLatitude()).toString();
                 String lon = new Double(mStartPoint.getLongitude()).toString();
+                /**插入骑行记录终点坐标*/
                 HttpUtil.updateTripRecord(mhandler,updateTripRecordUrl,tripRecord_fakeid,user.getEmail(),lat,lon);
+                HttpUtil.lockTheBike(mhandler,lockTheBikeUrl,QRresult);
             }
         });
 
@@ -407,7 +410,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                     if (bundle.getInt(CodeUtils.RESULT_TYPE)==CodeUtils.RESULT_SUCCESS){
                         QRresult=bundle.getString(CodeUtils.RESULT_STRING);
                         Toast.makeText(this,"解析结果："+QRresult,Toast.LENGTH_LONG).show();
-                        new Modifybluetoothlock().execute(blueToothUrl);
+                        new Modifybluetoothlock().execute(blueToothUrl);/**解锁单车*/
                     }else if (bundle.getInt(CodeUtils.RESULT_TYPE)==CodeUtils.RESULT_FAILED){
                         Toast.makeText(this,"解析二维码失败",Toast.LENGTH_LONG).show();
                     }
@@ -786,7 +789,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                 if (response.code()==200){
                     result=response.body().string();
                     //TODO 创建骑行记录并插入起始坐标
-                    if (result.trim().equals("megneto")){//在PHP脚本中，若是成功更新了状态则会返回megneto，其他情况不会返回此值
+                    if (result.trim().equals("megneto")){//在PHP脚本中，若是成功更新了状态则会返回megneto，其他情况不会返回此值,此更新即为解锁
                         String lat=new Double(mStartPoint.getLatitude()).toString();
                         String lon=new Double(mStartPoint.getLongitude()).toString();
                         HttpUtil.createTripRecord(mhandler,createTripRecordUrl,tripRecord_fakeid,user.getEmail(),lat,lon);
@@ -882,6 +885,13 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                     intent.putExtra("spendmoney",spendmoney);
                     startActivity(intent);
                     overridePendingTransition(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
+                    break;
+                case AppConst.LOCK_THE_BIKE_SUEECSS:
+                    Toast.makeText(mContext,"上锁成功，请您慢走！",Toast.LENGTH_SHORT).show();
+                    break;
+                case AppConst.LOCK_THE_BIKE_FAIL:
+                    Toast.makeText(mContext,"上锁失败！",Toast.LENGTH_SHORT).show();
+                    break;
             }
         }
     };

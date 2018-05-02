@@ -16,4 +16,7 @@ public class AppConst {
 
     public static final int DEDUCTION_SUCCESS=11;
     public static final int DEDUCTION_FAIL=12;
+
+    public static final int LOCK_THE_BIKE_SUEECSS=13;
+    public static final int LOCK_THE_BIKE_FAIL=14;
 }
