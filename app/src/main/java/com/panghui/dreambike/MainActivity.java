@@ -19,6 +19,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         ,RouteSearch.OnRouteSearchListener,AMap.OnInfoWindowClickListener,GeocodeSearch.OnGeocodeSearchListener{
     private static final String TAG = "MainActivity";
     /**Login部分变量*/
-    private DrawerLayout mDrawerLayout;
+    private DrawerLayout mDrawerLayout;/**抽屉*/
     private CircleImageView Login_imageView;
     private TextView Login_mail;
     private TextView Login_username;
@@ -120,12 +121,15 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
     private int goOutChoice=ROUTE_TYPE_WALK;
     private final int REQUEST_ROUTEDETAIL=1;
     private final int REQUEST_SCANQR=2;
-    /**四个图标*/
+
+
+    /**五个图标*/
     private ImageView refresh;
     private ImageView search_iv;
     private ImageView scancode_iv;
     private ImageView endTrip;
     private ProgressBar loadingbar;
+    private ImageView man_iv;
     /**marker数据*/
     String markerlocjsonData=null;
     String markerUrl="http://120.79.91.50/locationTojson.php";
@@ -179,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
         search_iv=(ImageView)findViewById(R.id.iv_search);
         scancode_iv=(ImageView)findViewById(R.id.iv_scan_code);
         endTrip=(ImageView)findViewById(R.id.endTrip);
+        man_iv=(ImageView)findViewById(R.id.man);
         mMapView.onCreate(savedInstanceState);
         /**加载圈*/
         loadingbar=(ProgressBar)findViewById(R.id.loading_bar);
@@ -261,6 +266,13 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
                     Intent intent=new Intent(MainActivity.this, CaptureActivity.class);
                     startActivityForResult(intent,REQUEST_SCANQR);
                 }
+            }
+        });
+        /**小人物的点击事件*/
+        man_iv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
         /**结束行程点击事件*///TODO
