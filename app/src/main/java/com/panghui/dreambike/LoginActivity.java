@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 String passString=password.getText().toString().trim();
                 if (userString.equals("")||passString.equals("")){
                     Toast.makeText(LoginActivity.this,
-                            "username or password can't be null!",Toast.LENGTH_LONG).show();
+                            "用户名或密码不能为空！",Toast.LENGTH_LONG).show();
                 }else {
                     new Thread(new Runnable() {
                         @Override
@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                                             @Override
                                             public void run() {
                                                 Toast.makeText(LoginActivity.this,
-                                                        "fail to log in,Please try again!",Toast.LENGTH_SHORT).show();
+                                                        "登录失败，请重试！",Toast.LENGTH_SHORT).show();
                                             }
                                         });
 

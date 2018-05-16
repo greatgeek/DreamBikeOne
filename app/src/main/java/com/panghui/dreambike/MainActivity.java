@@ -729,7 +729,7 @@ public class MainActivity extends AppCompatActivity implements AMap.OnMyLocation
             Login_mail.setText(user.getEmail());
             isLogin=true;//表示已经成功登录
             new getTripRecord().execute(tripRecordUrl);//TODO
-            Toast.makeText(MainActivity.this,"log in successfully!",Toast.LENGTH_LONG).show();
+            Toast.makeText(MainActivity.this,"登录成功！",Toast.LENGTH_LONG).show();
         }
     }
 

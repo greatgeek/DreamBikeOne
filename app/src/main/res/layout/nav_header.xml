@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:text="未登录"
+        android:text="点击头像登录"
         android:textColor="#fff"
         android:textSize="14sp"/>
     <TextView
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@id/mail"
-        android:text="未登录"
+        android:text=""
         android:textColor="#fff"
         android:textSize="14sp"/>
 

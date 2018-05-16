@@ -15,7 +15,7 @@
             android:layout_weight="1"
             android:textColor="#030303"
             android:textSize="16dp"
-            android:text="username:"
+            android:text="用户名:"
             android:textAlignment="center"
             android:textStyle="bold" />
         <EditText
@@ -35,7 +35,7 @@
             android:layout_weight="1"
             android:textColor="#030303"
             android:textSize="16dp"
-            android:text="password:"
+            android:text="密码:"
             android:textAlignment="center"
             android:textStyle="bold" />
         <EditText
@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#030303"
-            android:text="Remember password"
+            android:text="记住密码"
             android:textSize="18sp" />
 
     </LinearLayout>
@@ -74,7 +74,7 @@
             android:layout_marginLeft="100dp"
             android:background="@drawable/button_selector2"
             android:textSize="20dp"
-            android:text="login"
+            android:text="登录"
             android:textAllCaps="false"
             android:textStyle="bold" />
 
@@ -84,7 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="140dp"
             android:background="@drawable/button_selector1"
-            android:text="regist"
+            android:text="注册"
             android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>
